@@ -18,7 +18,7 @@ public class TransactionService {
 	private Stats stats = Stats.getInstance();
 
 	public boolean createTransaction(Transaction transaction) {
-		if (Util.olderThan60Seconds(transaction)) {
+		if (Util.inLast60Seconds(transaction)) {
 			return transactions.add(transaction);
 			
 		}
@@ -31,7 +31,7 @@ public class TransactionService {
 
 	@Scheduled(fixedRate = 1)
 	private void removeEntries() {
-		while (!transactions.isEmpty() && !Util.olderThan60Seconds(transactions.peek())) {
+		while (!transactions.isEmpty() && !Util.inLast60Seconds(transactions.peek())) {
 			transactions.poll();
 		}
 		stats.update(transactions);
